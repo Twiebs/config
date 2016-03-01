@@ -7,7 +7,8 @@
 (load-theme 'wombat 1)
 
 (setq default-tab-width 4)
-
+(setq make-backup-files nil)
+(setq backup-inhibited 1)
 (setq-default truncate-lines t)
 ;=======================================
 
@@ -150,9 +151,12 @@ nil
 (define-key evil-normal-state-map (kbd "<f9>") 'gud-watch)
 (define-key evil-normal-state-map (kbd "<f10>") 'gud-step)
 (define-key evil-normal-state-map (kbd "<f11>") 'gud-stepi)
+
 (setq gud-tooltip-mode t)
+(setq tooltip-delay 0)
+(setq tooltip-short-delay 0)
 
-
+(gud-def gdb-run-and-execute-to-here "start\n" nil nil)
 
 ;===============================================
 (custom-set-variables
@@ -160,9 +164,6 @@ nil
 ;; If you edit it by hand, you could mess it up, so be careful.
 ;; Your init file should contain only one such instance.
 ;; If there is more than one, they won't work right.
-'(gud-tooltip-mode t)
-'(tooltip-delay 0)
-'(tooltip-short-delay 0))
 (custom-set-faces
 ;; custom-set-faces was added by Custom.
 ;; If you edit it by hand, you could mess it up, so be careful.
