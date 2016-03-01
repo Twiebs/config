@@ -46,13 +46,24 @@
 (projectile-global-mode)
 (setq projectile-completion-system 'grizzl)
 (setq projectile-indexing-method 'native)
+(setq projectile-require-project-root nil)
 (setq projectile-enable-caching 1)
 
 (load "/usr/share/clang/clang-format.el")
 
 (require 'compile)
 (setq compile-command "sh build.sh")
-(defun twiebs-compile-project ())
+
+(defun twiebs-compile-project ()
+  (interactive)
+  (compile "sh build.sh"))
+
+(defun twiebs-compile-mode-hook ()
+  (make-local-variable 'truncate-lines)
+  (setq truncate-lines nil))
+
+(add-hook 'compilation-mode-hook 'twiebs-compile-mode-hook)
+(global-set-key (kbd "C-p") 'projectile-find-file)
 
 
 ;Vim Evil Mode
@@ -62,13 +73,13 @@
 
 (setq evil-shift-width 4)
 
+
 (define-key evil-insert-state-map (kbd "S-SPC") 'evil-normal-state)
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 (define-key evil-normal-state-map (kbd "S-f") 'clang-format-region)
 (define-key evil-visual-state-map (kbd "S-f") 'clang-format-region)
 
-(define-key evil-normal-state-map (kbd "<f5>") 'compile)
-
+(define-key evil-normal-state-map (kbd "<f5>") 'twiebs-compile-project)
 
 (defvar gud-overlay
 (let* ((ov (make-overlay (point-min) (point-min))))
@@ -143,27 +154,24 @@ nil
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 ;==================================================================
-
-
 ;GDB
-(define-key evil-normal-state-map (kbd "<f5>") 'gud-break)
-(define-key evil-normal-state-map (kbd "<f6>") 'gud-until)
+(define-key evil-normal-state-map (kbd "<f6>") 'gud-break)
+(define-key evil-normal-state-map (kbd "<f7>") 'gud-until)
 (define-key evil-normal-state-map (kbd "<f9>") 'gud-watch)
-(define-key evil-normal-state-map (kbd "<f10>") 'gud-step)
-(define-key evil-normal-state-map (kbd "<f11>") 'gud-stepi)
+;(define-key evil-normal-state-map (kbd "<f10>") 'gud-next)
+(define-key evil-normal-state-map (kbd "<f11>") 'gud-step)
+
+(defun twiebs-gdb-next ()
+  (interactive)
+  (gud-call "next"))
+  
+
+(global-set-key (kbd "<f10>") 'twiebs-gdb-next)
 
 (setq gud-tooltip-mode t)
 (setq tooltip-delay 0)
 (setq tooltip-short-delay 0)
 
-(gud-def gdb-run-and-execute-to-here "start\n" nil nil)
-
-;===============================================
-(custom-set-variables
-;; custom-set-variables was added by Custom.
-;; If you edit it by hand, you could mess it up, so be careful.
-;; Your init file should contain only one such instance.
-;; If there is more than one, they won't work right.
 (custom-set-faces
 ;; custom-set-faces was added by Custom.
 ;; If you edit it by hand, you could mess it up, so be careful.
