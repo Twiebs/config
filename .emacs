@@ -6,10 +6,30 @@
 (scroll-bar-mode -1)
 (load-theme 'wombat 1)
 
-(setq default-tab-width 4)
+
+;Not fucked up indentation
+(setq c-default-style "linux"
+      c-basic-offset 4)
+(setq c++-tab-always-indent t)
+(setq c-basic-offset 4)
+(setq c-indent-level 4)
+(setq tab-stop-list (number-sequence 4 120 4))
+(setq tab-width 4)
+(setq-default indent-tabs-mode nil)
+
+;(require 'aggressive-indent)
+(add-hook 'c++-mode-hook #'aggressive-indent-mode)
+
+;(add-to-list
+; 'aggressive-indent-dont-indent-if
+; '(and (derived-mode-p 'c++-mode)
+;       (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+;                           (thing-at-point 'line)))))
+
 (setq make-backup-files nil)
 (setq backup-inhibited 1)
 (setq-default truncate-lines t)
+(global-auto-revert-mode t)
 ;=======================================
 
 (require 'package)
@@ -98,7 +118,9 @@ ov)
 
 (defun gud-kill-buffer ()
 (if (eq major-mode 'gud-mode)
-(delete-overlay gud-overlay)))
+	(delete-overlay gud-overlay)))
+
+  
 
 (add-hook 'kill-buffer-hook 'gud-kill-buffer)
 
@@ -161,12 +183,32 @@ nil
 ;(define-key evil-normal-state-map (kbd "<f10>") 'gud-next)
 (define-key evil-normal-state-map (kbd "<f11>") 'gud-step)
 
+; Twiebs GDB Mode
+(defvar twiebs-gdb-active nil)
+
 (defun twiebs-gdb-next ()
   (interactive)
   (gud-call "next"))
+
+(defun twiebs-gdb-start ()
+  (interactive)
+  (setq twiebs-gdb-active t)
+  (gdb))
+  
+(defun twiebs-gdb-execute-to-here ()
+  (interactive)
+  (if (not twiebs-gdb-active)
+	(twiebs-gdb-start)	
+	;(gud-call "break main")	
+										;(gud-call "run")))
+	)
+  )
+	  
+ 
   
 
 (global-set-key (kbd "<f10>") 'twiebs-gdb-next)
+(global-set-key (kbd "C-<f6>") 'twiebs-gdb-execute-to-here)
 
 (setq gud-tooltip-mode t)
 (setq tooltip-delay 0)
